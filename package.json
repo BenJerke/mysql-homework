@@ -1,0 +1,12 @@
+{
+    "name": "bamazon-main",
+    "version": "1.0.0",
+    "description": "mock storefront application",
+    "main": "bamazonCustomer.js",
+    "dependencies": {
+      "inquirer": "^6.2.1",
+      "mysql": "^2.16.0",
+
+    }
+  }
+  
