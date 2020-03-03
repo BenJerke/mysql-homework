@@ -34,7 +34,6 @@ connection.connect(function(err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId);
     selectManagementWorkflow();
-
 });
 
 function selectManagementWorkflow(){
@@ -56,7 +55,7 @@ function selectManagementWorkflow(){
             break;
 
         case "Add to Inventory":
-            addQuantity()
+            addQuantity();
             break;
         
         case "Add New Product":
@@ -65,8 +64,6 @@ function selectManagementWorkflow(){
         }
     })
 }
-
-
 
 function viewProducts () {
     console.log("Here is our current inventory");
@@ -80,6 +77,7 @@ function viewProducts () {
     });
 };
 
+
 function viewLowInv () {
     console.log("Here are our low-inventory items:")
     console.log("__________________________________________")
@@ -89,17 +87,96 @@ function viewLowInv () {
         if (err) throw err;
         newWorkflow();
     });
-
-}
-
+};
 
 
+function addQuantity() {
+    console.log("Here's a list of our products: ")
+    connection.query("SELECT * FROM products" ,  function(err, res) {
+
+        console.log(res)
+        if (err) throw err;
+
+    inquirer.prompt ([
+        {
+            type: "number",
+            message: "Enter the product ID of the item you'd like to order more of.",
+            name: "itemId",
+        },
+
+        {
+            type: "number",
+            message: "Enter the number of units you'd like to purchase",
+            name: "itemQuantity",
+        },
+
+        ]).then(function (response) {
+
+            connection.query("SELECT * FROM products WHERE item_id = ?",[response.itemId], function (err, data){
+                var newQuantity = data[0].stock_quantity + response.itemQuantity;
+
+                connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQuantity, data[0].item_id])
+
+                console.log("We will now have " + newQuantity + " of " +data[0].product_name);
+
+                if (err) throw err; 
+                newWorkflow();
+            });
+        });
+    });
+};
 
 
+function addNewProduct () {
+    
+    inquirer.prompt([
+        {
+            type: "input",
+            name: "prdName",
+            message: "What would you like to order?",
+        },
+        {
+            type: "list",
+            name: "prdDep",
+            message: "What department does this item belong to?",
+            choices: ["odds and ends", "scribblables", "funstuff", "hellware"], 
+        },
+        {
+            type: "number",
+            name: "prdPrice",
+            message: "What is this item's price?",
+        },
+        {
+            type: "number",
+            name: "prdStock",
+            message: "How many would you like to order?",
+        },
+
+    ]).then(function (response){
+        connection.query("SELECT item_id FROM products GROUP BY;", function (res, err) {
+            console.log();
+            if (err) throw err;
+        });
+        
+
+        // var newProduct = {
+        //     id: newId,
+        //     name: response.prdName,
+        //     dep: response.prdDep,
+        //     price: response.prdPrice,
+        //     quant: response.prdQuant, 
+        // };
+
+        // connection.query("INSERT INTO products (item_id, product_name, department_name, price, stock_quantity)" +  
+        // "VALUES (?, ?, ?, ?, ?);", [newProduct.id, newProduct.name, newProduct.dep, newProduct.price, newProduct.quant]);
+
+        // if (err) throw err;
+        // newWorkflow();
+    });
+};
 
 
-
-function newWorkflow() {
+function newWorkflow () {
     inquirer.prompt([
         {
             type: "confirm",
@@ -114,6 +191,6 @@ function newWorkflow() {
             console.log("OK, have a nice day!")
             connection.end();
             return
-        }
-    })
-}
+        };
+    });
+};

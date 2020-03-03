@@ -116,6 +116,7 @@ function placeOrder(data, quantity, orderPrice) {
 function decrementStock (data, quantity) {
     var newQuantity = data[0].stock_quantity - quantity;
     connection.query("UPDATE products SET stock_quantity = ? WHERE item_id = ?", [newQuantity, data[0].item_id], function (err, res){
+        
     console.log("If you would like to order this item again, we have " + newQuantity + " left in stock.");
 
     if (err) throw err; 
