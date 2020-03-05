@@ -160,7 +160,7 @@ function addNewProduct () {
             name: response.prdName,
             dep: response.prdDep,
             price: response.prdPrice,
-            quant: response.prdQuant, 
+            quant: response.prdStock, 
         };
 
         connection.query("INSERT INTO products ( product_name, department_name, price, stock_quantity)" +  
