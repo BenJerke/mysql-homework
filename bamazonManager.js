@@ -153,25 +153,24 @@ function addNewProduct () {
         },
 
     ]).then(function (response){
-        connection.query("SELECT item_id FROM products GROUP BY;", function (res, err) {
-            console.log();
-            if (err) throw err;
-        });
         
 
-        // var newProduct = {
-        //     id: newId,
-        //     name: response.prdName,
-        //     dep: response.prdDep,
-        //     price: response.prdPrice,
-        //     quant: response.prdQuant, 
-        // };
+        var newProduct = {
+            
+            name: response.prdName,
+            dep: response.prdDep,
+            price: response.prdPrice,
+            quant: response.prdQuant, 
+        };
 
-        // connection.query("INSERT INTO products (item_id, product_name, department_name, price, stock_quantity)" +  
-        // "VALUES (?, ?, ?, ?, ?);", [newProduct.id, newProduct.name, newProduct.dep, newProduct.price, newProduct.quant]);
+        connection.query("INSERT INTO products ( product_name, department_name, price, stock_quantity)" +  
+        "VALUES (?, ?, ?, ?);", [newProduct.name, newProduct.dep, newProduct.price, newProduct.quant], function (err, data){
 
-        // if (err) throw err;
-        // newWorkflow();
+            console.log(data)
+            
+            if (err) throw err;
+            newWorkflow();
+        }) ;
     });
 };
 
